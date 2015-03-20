@@ -1,0 +1,89 @@
+<!DOCTYPE HTML>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+<title>Pepsi!!!!</title>
+
+<style type="text/css">
+	body {
+		background-color: #333333;
+		margin: 0px;
+		overflow: hidden;
+	}
+</style>
+</head>
+
+<body>
+
+
+<script type="text/javascript">
+
+// reference to the canvas
+canvas = document.createElement("canvas");
+mainContext = canvas.getContext('2d');
+
+// install canvas into DOM 
+document.body.appendChild(canvas); 
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+// Draw Pepsi Bottle function
+var img = new Image();
+img.src = "./redbull.png";
+img.onload = function() {
+	mainContext.drawImage(img, canvas.width/2 - img.width/2, (canvas.height-img.height));
+}
+
+// This tells javascript that we want to keep an array of "particles"
+var particles = [];
+
+// draw title on screen
+mainContext.fillStyle = "#000000";
+mainContext.font = "32px Arial";
+mainContext.fillText("q", 100, 100);
+
+setInterval(drawParticles,1000/60); 	// func every 1000/60 milliseconds, which gives us 60 frames/sec
+
+function drawParticles() {
+
+	// declares a particle variable each time drawParticles is called...with random properties
+	var  particle = {	psize : Math.random()*20 + 15,
+						xpos : canvas.width/2,
+						ypos : canvas.height - img.height,		// start at top of bottle cap
+						xdrift : Math.random()*3 - 1.5,
+						ydrift : -10.0,
+						hue : Math.random()*365};
+
+	particles.push(particle);		// save our newest particle!
+	
+
+	if (particles.length > 2000)		// if number of particles exceeds 200, remove the oldest particle on the array
+		particles.shift();
+
+	// clear current particle
+	mainContext.clearRect(1,1,canvas.width,(canvas.height - (img.height)));	
+	mainContext.fillText("Pepsi", 50, 50);  // redraw title, because we just erased it!
+
+	// draw each particle that's in our array
+	for(var i = 0; i< particles.length;i++) { 
+
+	    p = particles[i]; 
+		p.xpos += p.xdrift;
+		p.ypos += p.ydrift;
+
+		// draw particle, only if all of the particle is above the Pepsi bottle...otherwise we get "trails"
+		if (p.ypos < (canvas.height - img.height - p.psize)) {
+			mainContext.beginPath();
+			mainContext.arc(p.xpos,p.ypos,p.psize,0,Math.PI*2,true);
+			mainContext.fillStyle = "#000000"; 
+			mainContext.fill();
+		}
+
+		p.psize *= 0.98;		// shrink it each iteration
+		p.ydrift += 0.1;		// fake gravity
+	}		
+} 
+</script>
+<marquee> Pepsi Have Spent More On Advertising Than Coke, Red Bull and Club Orange all put together!</marquee>
+</body>
+</html>
